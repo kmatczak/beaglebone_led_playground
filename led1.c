@@ -34,14 +34,10 @@ static int led_blink(int interval){
 
     printk(KERN_INFO "led_blink called !\n");
     bool state=false;
-//    int count=0;
-//    int duration = 5; //duration in sec
-//    while (count<duration*1000/interval){
     while (!kthread_should_stop()){
       state=!state;
       led_control(state);
       msleep(interval);  
-//      ++count;
     }
 
     led_control(0);
@@ -50,7 +46,7 @@ static int led_blink(int interval){
 }
 
 static int led_timer(int time){
-    printk(KERN_INFO "led_on_timer called !\n");
+    printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
     led_control(1);
     msleep(time);
     led_control(0);
@@ -66,32 +62,57 @@ static int led_timer(int time){
 static char mode[20]; 
 static int control;
 
-//TODO: implement presentation of values 
 
 static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
     //return sprintf(buf, "%d\n", mode);
-    return sprintf(buf, "%s\n", mode);
+    
+    switch(led_mode){
+        case BLINK:
+            return sprintf(buf,"%s [%s] %s=%d\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            break;
+        case TIMEOUT:
+            return sprintf(buf,"%s %s [%s=%d]\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            break;
+        case NORMAL:
+        default:
+            return sprintf(buf,"[%s] %s %s=%d\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            break;
+    }
+    
 }
 
 static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count){
-    //sscanf(buf, "%du", &mode);
+    
     strncpy(mode,buf,20);
     printk(KERN_INFO "fetched mode: %s", mode);
     
     if ( NULL != strstr(mode, mod_txt[0]) ) led_mode = NORMAL;
     else if ( NULL != strstr(mode, mod_txt[1]) ) led_mode = BLINK;
-    else if ( NULL != strstr(mode, mod_txt[2]) ) led_mode = TIMEOUT;
+    else if ( NULL != strstr(mode, mod_txt[2]) ) {
+        led_mode = TIMEOUT;
+        char* pch; 
+        pch = strchr(mode,'=');
+        if (pch != NULL){
+            ++pch;
+            if ( 0 > sscanf(pch, "%d", &timeout_interval) ) {
+                printk(KERN_ERR "timeout conversion error ! \n");
+                return -1;
+            }
+       }
+    }
     else {
-        printk(KERN_ERR "mode not supported\n");
+        printk(KERN_ERR "mode not supported or wrong syntax\n");
         return -EIO;
     }
 
     return count;
 }
 
+
 static ssize_t control_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
     return sprintf(buf, "%d\n", control);
 }
+
 
 static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count){
     
@@ -117,12 +138,10 @@ static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, 
                 case BLINK:
                     blink_task = kthread_run(&led_blink,(void *)blink_interval,"blink_thread");
                     printk(KERN_INFO"Kernel Thread : %s\n",blink_task->comm);
-                    //led_blink(100);
                     break;
                 case TIMEOUT:
                     timeout_task = kthread_run(&led_timer,(void *)timeout_interval,"timeout_thread");
                     printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
-                    //led_timer(5000);
                 case NORMAL:
                 default:
                     led_control(1);
