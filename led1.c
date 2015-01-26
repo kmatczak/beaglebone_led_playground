@@ -30,7 +30,8 @@ static int led_control(int val){
     return 0;
 }
 
-static int led_blink(int interval){
+static void led_blink(int interval){
+    
 
     printk(KERN_INFO "led_blink called !\n");
     bool state=false;
@@ -41,17 +42,17 @@ static int led_blink(int interval){
     }
 
     led_control(0);
+    do_exit(0);
 
-    return 0;    
 }
 
-static int led_timer(int time){
+static void led_timer(int time){
     printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
     led_control(1);
     msleep(time);
+
     led_control(0);
-    
-    return 0;
+    do_exit(0);
 }
 
 
@@ -108,6 +109,12 @@ static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, con
     return count;
 }
 
+static void stop_led_threads(void){
+if (timeout_task != NULL) kthread_stop(timeout_task);
+if (blink_task != NULL) kthread_stop(blink_task);
+}
+
+
 
 static ssize_t control_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
     return sprintf(buf, "%d\n", control);
@@ -122,10 +129,10 @@ static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, 
         case 0:   
             switch(led_mode){
                 case BLINK:
-                    kthread_stop(blink_task);
+                    stop_led_threads();
                     break;
                 case TIMEOUT:
-                    kthread_stop(timeout_task);
+                    stop_led_threads();
                     break;
                 case NORMAL:
                 default:
@@ -136,12 +143,15 @@ static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, 
         case 1: 
             switch(led_mode){
                 case BLINK:
+                    stop_led_threads();
                     blink_task = kthread_run(&led_blink,(void *)blink_interval,"blink_thread");
                     printk(KERN_INFO"Kernel Thread : %s\n",blink_task->comm);
                     break;
                 case TIMEOUT:
+                    stop_led_threads();
                     timeout_task = kthread_run(&led_timer,(void *)timeout_interval,"timeout_thread");
                     printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
+                    break;
                 case NORMAL:
                 default:
                     led_control(1);
@@ -234,12 +244,13 @@ static int hello_init(void){
 
 static void hello_exit(void){
 
+    printk(KERN_INFO "Exit start\n");
+
     gpio_set_value(gpio,0);
     gpio_free(gpio);
     
     kobject_put(example_kobj);    
-    kthread_stop(blink_task);
-    kthread_stop(timeout_task);
+    stop_led_threads();
     
     printk(KERN_INFO "Bye\n");
 }
