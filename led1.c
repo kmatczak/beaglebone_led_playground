@@ -18,22 +18,22 @@ static Mode led_mode = NORMAL;
 
 struct task_struct* blink_task; 
 struct task_struct* timeout_task; 
+int thr_flag[2] = { 0, 0 }; 
+
 
 int blink_interval=50;
 int timeout_interval=5000;
 
 static int led_control(int val){
-
-//    printk(KERN_INFO "led_control called !\n");
+    
     gpio_set_value(gpio, val);
-
     return 0;
 }
 
 static void led_blink(int interval){
     
-
     printk(KERN_INFO "led_blink called !\n");
+    thr_flag[0]=1;
     bool state=false;
     while (!kthread_should_stop()){
       state=!state;
@@ -42,17 +42,18 @@ static void led_blink(int interval){
     }
 
     led_control(0);
-    do_exit(0);
 
+    thr_flag[0]=0;
 }
 
 static void led_timer(int time){
+    thr_flag[1]=1;
     printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
     led_control(1);
     msleep(time);
 
     led_control(0);
-    do_exit(0);
+    thr_flag[1]=0;
 }
 
 
@@ -110,8 +111,10 @@ static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, con
 }
 
 static void stop_led_threads(void){
-if (timeout_task != NULL) kthread_stop(timeout_task);
-if (blink_task != NULL) kthread_stop(blink_task);
+   // printk(KERN_INFO "##KM %s %d\n", __FILE__,  __LINE__);
+    if (thr_flag[1]) kthread_stop(timeout_task);
+   // printk(KERN_INFO "##KM %s %d\n", __FILE__,  __LINE__);
+    if (thr_flag[0]) kthread_stop(blink_task);
 }
 
 
