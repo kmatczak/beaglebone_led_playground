@@ -37,8 +37,10 @@ static void led_blink(int interval){
     thr_flag[0]=1;
     bool state=false;
     while (!kthread_should_stop()){
+      set_current_state(TASK_RUNNING);
       state=!state;
       led_control(state);
+      set_current_state(TASK_INTERRUPTIBLE);
       msleep(interval);  
     }
 
@@ -48,9 +50,11 @@ static void led_blink(int interval){
 }
 
 static void led_timer(int time){
+    set_current_state(TASK_RUNNING);
     thr_flag[1]=1;
     printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
     led_control(1);
+    set_current_state(TASK_INTERRUPTIBLE);
     msleep(time);
 
     led_control(0);
