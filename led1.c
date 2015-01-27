@@ -13,16 +13,17 @@ MODULE_LICENSE("Dual BSD/GPL");
 static int  gpio=54;
 const char* mod_txt[] = {"normal","blink","timeout"};
 typedef enum modes {NORMAL, BLINK, TIMEOUT} Mode; 
-
 static Mode led_mode = NORMAL;
 
 struct task_struct* blink_task; 
 struct task_struct* timeout_task; 
 int thr_flag[2] = { 0, 0 }; 
 
-
 int blink_interval=50;
 int timeout_interval=5000;
+
+
+
 
 static int led_control(int val){
     
@@ -59,7 +60,6 @@ static void led_timer(int time){
 
 
 //----sysfs files creation---------------------------------
-
 
 static char mode[20]; 
 static int control;
@@ -116,7 +116,6 @@ static void stop_led_threads(void){
    // printk(KERN_INFO "##KM %s %d\n", __FILE__,  __LINE__);
     if (thr_flag[0]) kthread_stop(blink_task);
 }
-
 
 
 static ssize_t control_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
@@ -212,11 +211,6 @@ static int hello_init(void){
     /*
     * Create a simple kobject with the name of "led_gpio_GPIO",
     * located under /sys/kernel/
-    *
-    * As this is a simple directory, no uevent will be sent to
-    * userspace.  That is why this function should not be used for
-    * any type of dynamic kobjects, where the name and number are
-    * not known ahead of time.
     */
     char led_dir[64];
     snprintf(led_dir, 64, "led_gpio_%d", gpio);
