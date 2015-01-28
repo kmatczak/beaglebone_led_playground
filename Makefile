@@ -10,4 +10,4 @@ all:
 	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD) modules
 
 clean:
-	rm -rf *.o .depend.*.cmd *.ko *.mod.c .tmp_versions .led1*  .sysfs_handler* .led_handler* .mod_main*	
+	rm -rf *.o .depend.*.cmd *.ko *.mod.c .tmp_versions .led_driver*  .sysfs_handler* .led_handler* .mod_main*	
