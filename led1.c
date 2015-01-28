@@ -25,8 +25,7 @@ int  gpio=54;
 
 struct task_struct* blink_task; 
 struct task_struct* timeout_task; 
-
-
+int thr_flag[2] = { 0, 0 };
 
 int led_control(int val){
 
@@ -37,26 +36,42 @@ int led_control(int val){
 }
 
 static void led_blink(int interval){
-    
 
+    set_current_state(TASK_RUNNING);    
+    
     printk(KERN_INFO "led_blink called !\n");
+    
+    thr_flag[0]=1;
     bool state=false;
+    
     while (!kthread_should_stop()){
-      state=!state;
-      led_control(state);
-      msleep(interval);  
+        
+        set_current_state(TASK_RUNNING);    
+        state=!state;
+        led_control(state);
+        msleep(interval);  
     }
 
     led_control(0);
+    thr_flag[0]=0;
 
 }
 
 static void led_timer(int time){
+    
+    set_current_state(TASK_RUNNING);
+    
     printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
-    led_control(1);
-    msleep(time);
 
+    thr_flag[1]=1;
+
+    led_control(1);
+    set_current_state(TASK_INTERRUPTIBLE);
+    msleep(time);
     led_control(0);
+
+    thr_flag[1]=0;
+
 }
 
 
@@ -65,8 +80,8 @@ static void led_timer(int time){
 
 int stop_led_threads(void){
     
-    if (timeout_task != NULL) kthread_stop(timeout_task);
-    if (blink_task != NULL) kthread_stop(blink_task);
+    if (thr_flag[1]) kthread_stop(timeout_task);
+    if (thr_flag[0]) kthread_stop(blink_task);
 
     return 0;
 }
