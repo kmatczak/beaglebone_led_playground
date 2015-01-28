@@ -6,19 +6,10 @@
 #include "mod_main.h"
 #include "led_handler.h"
 
-
 #define __NO_VERSION__
 
 
-/*
-int stop_led_threads(void);
-int led_control(int);
-int start_blink_thread(void);
-int start_timeout_thread(void);
-*/
 const char* mod_txt[] = {"normal","blink","timeout"};
-
-
 
 
 //----sysfs files creation---------------------------------
