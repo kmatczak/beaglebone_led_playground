@@ -6,7 +6,7 @@
 //#include <linux/interrupt.h>
 //#include <linux/kobject.h>
 #include <linux/kthread.h>
-#include "led1.h"
+#include "mod_main.h"
 #include "led_handler.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
