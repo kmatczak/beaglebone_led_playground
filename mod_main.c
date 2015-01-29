@@ -13,7 +13,8 @@ MODULE_LICENSE("Dual BSD/GPL");
 //extern definitions
 extern int sysfs_init(void);
 extern int sysfs_cleanup(void);
-
+extern int ioctl_init(void);
+extern int ioctl_cleanup(void);
 
 //extern declarations
 int blink_interval=50;
@@ -41,6 +42,7 @@ static int hello_init(void){
     }
    
     sysfs_init();
+    ioctl_init();
     
     return 0;
 }
@@ -55,9 +57,11 @@ static void hello_exit(void){
     gpio_free(gpio);
     
 
-    sysfs_cleanup();
     stop_led_threads();
-    
+    sysfs_cleanup();
+    ioctl_cleanup();
+
+
     printk(KERN_INFO "Bye\n");
 }
 

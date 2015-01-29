@@ -84,7 +84,7 @@ int stop_led_threads(void){
 
 int start_blink_thread(void){
 
-    blink_task = kthread_run(&led_blink, &blink_interval,"blink_thread");
+    blink_task = kthread_run(&led_blink, blink_interval,"blink_thread");
     printk(KERN_INFO"Kernel Thread : %s\n",blink_task->comm);
 
     return 0;
@@ -95,7 +95,7 @@ int start_blink_thread(void){
 
 int  start_timeout_thread(void){
 
-    timeout_task = kthread_run(&led_timer, &timeout_interval,"timeout_thread");
+    timeout_task = kthread_run(&led_timer, timeout_interval,"timeout_thread");
     printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
 
     return 0;
