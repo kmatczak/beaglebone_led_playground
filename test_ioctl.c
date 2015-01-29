@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
+#include <linux/ioctl.h>
 #include "led_ioctl_cmd.h"
 
 

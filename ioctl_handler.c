@@ -1,5 +1,6 @@
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
+#include <linux/ioctl.h>
 #include "mod_main.h"
 #include "led_ioctl_cmd.h"
 
