@@ -20,8 +20,11 @@ static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
     printk(KERN_INFO "led_ioctl\n");
 
     switch(cmd){
+        case IOCTL_SET_INT:
+                printk(KERN_INFO "received IOCTL_SET_INT");
+                break;
         case IOC_LED_ON:
-                printk(KERN_INFO "IOC_LED_ON:%x",cmd);
+                printk(KERN_INFO "IOC_LED_ON:%d",cmd);
                 break;
         case IOC_LED_OFF:
                 break;
