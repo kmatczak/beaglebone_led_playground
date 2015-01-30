@@ -21,5 +21,5 @@ cleanall: clean
 #	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD)  -v ./test_ioctl.o 
 
 test_ioctl:
-	/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux-gcc  -M -v   test_ioctl.c -o test_ioctl
+	/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux-gcc   test_ioctl.c -o test_ioctl
 

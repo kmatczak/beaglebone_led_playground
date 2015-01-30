@@ -1,4 +1,4 @@
-//#include <stdio.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -24,7 +24,7 @@ if ( retval = ioctl(fd, IOCTL_SET_MSG, msg ) == -1){
 //if ( retval = ioctl(fd, IOCTL_SET_INT, 0) == -1){
 //if ( retval = ioctl(fd, SCULL_IOCSQUANTUM, &quantum) == -1){
     
-  perror("error while ioctl writing\n");
+  perror("error while ioctl writing");
 }
 else{
  
