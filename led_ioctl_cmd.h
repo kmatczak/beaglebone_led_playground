@@ -1,9 +1,21 @@
 #ifndef LED_IOCTL_H
 #define LED_IOCTL_H
 
-#define MAJOR_NO                60
+#define MAJOR_NO               10 
 
 #define DEVICE                  "/dev/led_device" 
+
+
+
+#define SCULL_IOC_MAGIC     'k'
+#define SCULL_IOCRESET      _IO(SCULL_IOC_MAGIC, 0)
+#define SCULL_IOCSQUANTUM   _IOW(SCULL_IOC_MAGIC,  1, int)
+
+
+
+
+
+
 
 
 #define IOCTL_SET_MSG _IOR(MAJOR_NO, 0, char*)

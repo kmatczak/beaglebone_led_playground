@@ -3,26 +3,31 @@
 #include <linux/ioctl.h>
 #include "mod_main.h"
 #include "led_ioctl_cmd.h"
+#include <asm/uaccess.h>
 
 #define __NO_VERSION__
 
 
 
-/*
-static ssize_t led_write(struct file *file, const char__user *data, size_t len, loff_t *ppos){
+
+static ssize_t led_write(struct file *file, const char __user *data, size_t len, loff_t *ppos){
 
     printk(KERN_INFO "led_write\n");
-    return 0;
+    return len;
 }
-*/
+
 
 static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
     printk(KERN_INFO "led_ioctl\n");
 
     switch(cmd){
-        case IOCTL_SET_INT:
+/*        case SCULL_IOCSQUANTUM:
                 printk(KERN_INFO "received IOCTL_SET_INT");
+                break;
+*/      
+        case IOCTL_SET_MSG:
+                printk(KERN_INFO "IOCTL_SET_MSG received");
                 break;
         case IOC_LED_ON:
                 printk(KERN_INFO "IOC_LED_ON:%d",cmd);
@@ -44,14 +49,14 @@ static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
 
 static int led_open(struct inode *inode, struct file *file){
 
-    printk(KERN_INFO "led_open\n");
+    printk(KERN_INFO "/dev/led_driver open\n");
     return 0;
 }
 
 
 static int led_release(struct inode *inode, struct file *file){
 
-    printk(KERN_INFO "led_open\n");
+    printk(KERN_INFO "/dev/led_driver release\n");
     return 0;
 }
 
@@ -62,7 +67,7 @@ static int led_release(struct inode *inode, struct file *file){
 static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
     .llseek = no_llseek,
-   // .write = &led_write,
+     .write = &led_write,
     .unlocked_ioctl = &led_ioctl, 
     .open = &led_open,
     .release =&led_release,   
