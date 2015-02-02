@@ -24,14 +24,14 @@ static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char
     
     switch(led_mode){
         case BLINK:
-            return sprintf(buf,"%s [%s] %s=%d\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            return sprintf(buf,"%s [%s=%d] %s=%d\n", mod_txt[0], mod_txt[1], blink_interval, mod_txt[2],  timeout_interval);
             break;
         case TIMEOUT:
-            return sprintf(buf,"%s %s [%s=%d]\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            return sprintf(buf,"%s %s=%d [%s=%d]\n", mod_txt[0], mod_txt[1], blink_interval, mod_txt[2],  timeout_interval);
             break;
         case NORMAL:
         default:
-            return sprintf(buf,"[%s] %s %s=%d\n", mod_txt[0], mod_txt[1], mod_txt[2], timeout_interval);
+            return sprintf(buf,"[%s] %s=%d %s=%d\n", mod_txt[0], mod_txt[1], blink_interval, mod_txt[2], timeout_interval);
             break;
     }
     
@@ -43,7 +43,19 @@ static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, con
     printk(KERN_INFO "fetched mode: %s", mode);
     
     if ( NULL != strstr(mode, mod_txt[0]) ) led_mode = NORMAL;
-    else if ( NULL != strstr(mode, mod_txt[1]) ) led_mode = BLINK;
+    else if ( NULL != strstr(mode, mod_txt[1]) ) {
+        led_mode = BLINK;
+        char* pch; 
+        pch = strchr(mode,'=');
+        if (pch != NULL){
+            ++pch;
+            if ( 0 > sscanf(pch, "%d", &blink_interval) ) {
+                printk(KERN_ERR "blink conversion error ! \n");
+                return -1;
+            }
+       }
+
+    }
     else if ( NULL != strstr(mode, mod_txt[2]) ) {
         led_mode = TIMEOUT;
         char* pch; 

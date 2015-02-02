@@ -26,7 +26,7 @@ int  gpio=54;
 
 
 
-static int hello_init(void){
+static int __init hello_init(void){
     
     printk(KERN_INFO "Hello world !\n");
 
@@ -49,7 +49,7 @@ static int hello_init(void){
 
 
 
-static void hello_exit(void){
+static void __exit hello_exit(void){
 
     printk(KERN_INFO "Exit start\n");
 

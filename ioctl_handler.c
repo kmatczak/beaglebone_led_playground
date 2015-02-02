@@ -8,7 +8,7 @@
 #define __NO_VERSION__
 
 
-
+int in_use = 0;
 
 static ssize_t led_write(struct file *file, const char __user *data, size_t len, loff_t *ppos){
 
@@ -17,7 +17,7 @@ static ssize_t led_write(struct file *file, const char __user *data, size_t len,
 }
 
 
-static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
+static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
     printk(KERN_INFO "led_ioctl\n");
 
@@ -29,7 +29,7 @@ static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
         case IOCTL_SET_MSG:
                 printk(KERN_INFO "IOCTL_SET_MSG received");
                 break;
-        case IOC_LED_ON:
+/*        case IOC_LED_ON:
                 printk(KERN_INFO "IOC_LED_ON:%d",cmd);
                 break;
         case IOC_LED_OFF:
@@ -38,7 +38,7 @@ static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 break;
         case IOC_LED_MODE_TIMEOUT:
                 break;
-        default:
+*/        default:
                 break;        
 
     }
@@ -49,12 +49,20 @@ static long led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
 
 static int led_open(struct inode *inode, struct file *file){
 
+
+    if(in_use) return -EBUSY;
+    ++in_use;
+
     printk(KERN_INFO "/dev/led_driver open\n");
+    printk(KERN_INFO "module expects IOCTL_SET_MSG value:%x\n", IOCTL_SET_MSG);
+
     return 0;
 }
 
 
 static int led_release(struct inode *inode, struct file *file){
+
+    --in_use;
 
     printk(KERN_INFO "/dev/led_driver release\n");
     return 0;
@@ -63,12 +71,13 @@ static int led_release(struct inode *inode, struct file *file){
 
 
 
-
+    
 static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
-    .llseek = no_llseek,
-     .write = &led_write,
-    .unlocked_ioctl = &led_ioctl, 
+//    .llseek = no_llseek,
+    .write = &led_write,
+    .unlocked_ioctl = (void*)&led_ioctl,
+    .compat_ioctl = (void*)&led_ioctl, 
     .open = &led_open,
     .release =&led_release,   
         
@@ -93,6 +102,7 @@ int ioctl_init(void){
     return 0;
 
 }
+
 
 int ioctl_cleanup(void){
 
