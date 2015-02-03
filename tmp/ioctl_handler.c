@@ -16,6 +16,15 @@ static ssize_t led_write(struct file *file, const char __user *data, size_t len,
     return len;
 }
 
+static ssize_t led_read(struct file *file, char __user * buffer,  size_t length, loff_t * offset)
+{
+	/* 
+	 * Number of bytes actually written to the buffer 
+	 */
+	int bytes_read = 0;
+    return bytes_read;
+
+}
 
 static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
@@ -76,6 +85,7 @@ static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
 //    .llseek = no_llseek,
     .write = &led_write,
+    .read = &led_read,
     .unlocked_ioctl = (void*)&led_ioctl,
     .compat_ioctl = (void*)&led_ioctl, 
     .open = &led_open,

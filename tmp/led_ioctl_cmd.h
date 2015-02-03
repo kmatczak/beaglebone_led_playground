@@ -18,7 +18,7 @@
 
 
 
-#define IOCTL_SET_MSG _IOWR(MAJOR_NO, 0, char*)
+#define IOCTL_SET_MSG _IOR(MAJOR_NO, 0, char*)
 //#define IOCTL_SET_INT _IOR(MAJOR_NO, 0, int)
 
 //#define IOC_LED_ON              0x0001
