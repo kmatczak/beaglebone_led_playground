@@ -74,7 +74,7 @@ static int led_release(struct inode *inode, struct file *file){
     
 static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
-//    .llseek = no_llseek,
+    .llseek = no_llseek,
     .write = &led_write,
     .unlocked_ioctl = (void*)&led_ioctl,
     .compat_ioctl = (void*)&led_ioctl, 
