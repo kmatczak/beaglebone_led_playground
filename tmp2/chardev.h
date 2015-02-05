@@ -17,7 +17,8 @@
  * registration any more, because ioctls need to know 
  * it. 
  */
-#define MAJOR_NUM 100
+//#define MAJOR_NUM 100
+#define MAJOR_NUM 10
 
 /* 
  * Set the message of the device driver 

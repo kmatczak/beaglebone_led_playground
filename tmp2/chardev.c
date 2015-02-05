@@ -4,12 +4,12 @@
 
 #include <linux/kernel.h>	/* We're doing kernel work */
 #include <linux/module.h>	/* Specifically, a module */
+#include <linux/init.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for get_user and put_user */
 #include <linux/miscdevice.h>
 #include "chardev.h"
 #define SUCCESS 0
-#define DEVICE_NAME "char_dev"
 #define BUF_LEN 80
 
 /* 
@@ -246,55 +246,51 @@ struct miscdevice misc_dev={
 /* 
  * Initialize the module - Register the character device 
  */
-int init_module()
+static int __init sample_init(void)
 {
-	int ret_val;
+	int ret;
 	/* 
 	 * Register the character device (atleast try) 
 	 */
 	//ret_val = register_chrdev(MAJOR_NUM, DEVICE_NAME, &Fops);
 
-	ret_val = misc_register(&misc_dev);
+    ret = misc_register(&misc_dev);
 
 	/* 
 	 * Negative values signify an error 
 	 */
-	if (ret_val < 0) {
+	if (ret < 0) {
 		printk(KERN_ALERT "%s failed with %d\n",
-		       "Sorry, registering the character device ", ret_val);
-		return ret_val;
+		       "Sorry, registering the character device ", ret);
+		return ret;
 	}
+    else{
 
-	printk(KERN_INFO "%s The major device number is %d.\n",
-	       "Registeration is a success", MAJOR_NUM);
-	printk(KERN_INFO "If you want to talk to the device driver,\n");
-	printk(KERN_INFO "you'll have to create a device file. \n");
-	printk(KERN_INFO "We suggest you use:\n");
-	printk(KERN_INFO "mknod %s c %d 0\n", DEVICE_FILE_NAME, MAJOR_NUM);
-	printk(KERN_INFO "The device file name is important, because\n");
-	printk(KERN_INFO "the ioctl program assumes that's the\n");
-	printk(KERN_INFO "file you'll use.\n");
-
-	return 0;
+	printk(KERN_INFO "Succesfully registered  minor device number  %d.\n", misc_dev.minor);
+    }   
+	
+    return 0;
 }
 
 /* 
  * Cleanup - unregister the appropriate file from /proc 
  */
-void cleanup_module()
+static void __exit sample_exit(void)
 {
 	int ret;
 
 	/* 
 	 * Unregister the device 
 	 */
-//	ret = unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
-	//unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
-	misc_deregister(&misc_dev);
-
-	/* 
-	 * If there's an error, report it 
-	 */
-//	if (ret < 0)
-//		printk(KERN_ALERT "Error: unregister_chrdev: %d\n", ret);
+    ret = misc_deregister(&misc_dev);
+    if (ret < 0) {
+		printk(KERN_ALERT "Misc device registration failed with %d\n",  ret);
+	}
+    else{
+	    printk(KERN_INFO "Succesfully deregistered  minor device number  %d.\n", misc_dev.minor);
+    
+    }
 }
+
+module_init(sample_init);
+module_exit(sample_exit);
