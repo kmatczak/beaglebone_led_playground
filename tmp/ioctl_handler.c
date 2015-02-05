@@ -35,8 +35,8 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 printk(KERN_INFO "received IOCTL_SET_INT");
                 break;
 */      
-        case IOCTL_SET_MSG:
-                printk(KERN_INFO "IOCTL_SET_MSG received");
+        case IOCTL_DUMMY:
+                printk(KERN_INFO "IOCTL_DUMMY received");
                 break;
 /*        case IOC_LED_ON:
                 printk(KERN_INFO "IOC_LED_ON:%d",cmd);
@@ -83,7 +83,7 @@ static int led_release(struct inode *inode, struct file *file){
     
 static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
-//    .llseek = no_llseek,
+    .llseek = no_llseek,
     .write = &led_write,
     .read = &led_read,
     .unlocked_ioctl = (void*)&led_ioctl,
