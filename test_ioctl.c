@@ -27,12 +27,12 @@ char *msg="test_message";
 
 retval = ioctl(fd, IOCTL_LED_MODE_BLINK);
 retval = ioctl(fd, IOCTL_LED_ON);
-sleep(5);
+sleep(6);
 retval = ioctl(fd, IOCTL_LED_OFF);
 
 retval = ioctl(fd, IOCTL_LED_MODE_TIMEOUT) ;
 retval = ioctl(fd, IOCTL_LED_ON);
-sleep(5);
+sleep(6);
 
 retval = ioctl(fd, IOCTL_LED_MODE_NORMAL) ;
 retval = ioctl(fd, IOCTL_LED_ON);
