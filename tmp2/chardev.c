@@ -6,7 +6,7 @@
 #include <linux/module.h>	/* Specifically, a module */
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for get_user and put_user */
-
+#include <linux/miscdevice.h>
 #include "chardev.h"
 #define SUCCESS 0
 #define DEVICE_NAME "char_dev"
@@ -235,6 +235,14 @@ struct file_operations Fops = {
 	.release = device_release,	/* a.k.a. close */
 };
 
+
+struct miscdevice misc_dev={
+    .minor=MISC_DYNAMIC_MINOR,
+    .name="sample_misc_dev",
+    .fops=&Fops,
+    .mode=S_IRWXUGO,
+};
+
 /* 
  * Initialize the module - Register the character device 
  */
@@ -244,7 +252,9 @@ int init_module()
 	/* 
 	 * Register the character device (atleast try) 
 	 */
-	ret_val = register_chrdev(MAJOR_NUM, DEVICE_NAME, &Fops);
+	//ret_val = register_chrdev(MAJOR_NUM, DEVICE_NAME, &Fops);
+
+	ret_val = misc_register(&misc_dev);
 
 	/* 
 	 * Negative values signify an error 
@@ -279,7 +289,8 @@ void cleanup_module()
 	 * Unregister the device 
 	 */
 //	ret = unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
-	unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
+	//unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
+	misc_deregister(&misc_dev);
 
 	/* 
 	 * If there's an error, report it 
