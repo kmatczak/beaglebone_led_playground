@@ -12,7 +12,8 @@ compile:
 	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD) modules
 
 clean:
-	rm -rf *.o .depend.*.cmd  *.mod.c .tmp_versions .led_driver* .*handler*  .mod_main* 	
+#	rm -rf *.o .depend.*.cmd  *.mod.c .tmp_versions .led_driver* .*handler*  .mod_main* 	
+	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD) clean
 
 cleanall: clean
 	rm -rf *.ko test_ioctl 	
