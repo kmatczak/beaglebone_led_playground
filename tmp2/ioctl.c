@@ -26,7 +26,8 @@ ioctl_set_msg(int file_desc, char *message)
 	printf("set_msg message:%s\n", message);
 	int ret_val;
 
-	ret_val = ioctl(file_desc, IOCTL_SET_MSG, message);
+	//ret_val = ioctl(file_desc, IOCTL_SET_MSG, message);
+	ret_val = ioctl(file_desc, IOCTL_DUMMY);
 
 	if (ret_val < 0) {
 		printf("ioctl_set_msg failed:%d\n", ret_val);
@@ -87,15 +88,19 @@ main()
 {
 	int file_desc, ret_val;
 	char *msg = "Message passed by ioctl\n";
+    char *dev_name= DEVICE_FILE_NAME2 ;
 
-	file_desc = open(DEVICE_FILE_NAME, 0);
+
+	file_desc = open(dev_name, 0);
+
 	if (file_desc < 0) {
-		printf("Can't open device file: %s\n", DEVICE_FILE_NAME);
+		printf("Can't open device file: %s\n", dev_name ); 
 		exit(-1);
 	}
 
 //	ioctl_get_nth_byte(file_desc);
 //	ioctl_get_msg(file_desc);
+    printf("sending ioctl via  %s\n", dev_name ); 
 	ioctl_set_msg(file_desc, msg);
 
 	close(file_desc);

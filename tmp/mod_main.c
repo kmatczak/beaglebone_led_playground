@@ -4,7 +4,6 @@
 #include "mod_main.h"
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
-#include <linux/ioctl.h>
 #include "led_ioctl_cmd.h"
 #include <asm/uaccess.h>
 
@@ -31,8 +30,10 @@ static ssize_t led_read(struct file *file, char __user * buffer,  size_t length,
 
 }
 
-static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
-   
+//static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
+int led_ioctl(struct inode *inode,  struct file *file,	unsigned int cmd, unsigned long ioctl_param)
+{
+
     printk(KERN_INFO "led_ioctl\n");
 
     switch(cmd){

@@ -26,8 +26,8 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 printk(KERN_INFO "received IOCTL_SET_INT");
                 break;
 */      
-        case IOCTL_SET_MSG:
-                printk(KERN_INFO "IOCTL_SET_MSG received");
+        case IOCTL_LED_ON:
+                printk(KERN_INFO "IOCTL_LED_ON received");
                 break;
 /*        case IOC_LED_ON:
                 printk(KERN_INFO "IOC_LED_ON:%d",cmd);
@@ -54,7 +54,6 @@ static int led_open(struct inode *inode, struct file *file){
     ++in_use;
 
     printk(KERN_INFO "/dev/led_driver open\n");
-    printk(KERN_INFO "module expects IOCTL_SET_MSG value:%x\n", IOCTL_SET_MSG);
 
     return 0;
 }

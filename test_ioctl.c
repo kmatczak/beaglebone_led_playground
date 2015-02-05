@@ -9,9 +9,10 @@ int main (int argc , char** argv){
 
 printf("---- TEST START ----\n");
 
-int fd=0;
+int fd;
+fd=open(DEVICE,O_RDWR) ;
 
-if (fd=open(DEVICE,O_RDWR) < 0) {
+if (fd < 0) {
     perror("error while file opening\n");
     exit(1);
 }
@@ -20,11 +21,11 @@ int retval=0;
 int quantum =5;
 
 char *msg="test_message";
-printf("IOCTL_SET_MSG value: %x\n",IOCTL_SET_MSG);
-if ( retval = ioctl(fd, IOCTL_SET_MSG, msg ) == -1){
-//if ( retval = ioctl(fd, IOCTL_SET_INT, 0) == -1){
-//if ( retval = ioctl(fd, SCULL_IOCSQUANTUM, &quantum) == -1){
-    
+printf("IOCTL_LED_ON value: %x\n",IOCTL_LED_ON);
+retval = ioctl(fd, IOCTL_LED_ON);
+
+if (retval == -1){
+  
   perror("error while ioctl writing");
 }
 else{

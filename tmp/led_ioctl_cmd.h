@@ -1,9 +1,12 @@
 #ifndef LED_IOCTL_H
 #define LED_IOCTL_H
 
+#include <linux/ioctl.h>
+
 #define MAJOR_NO               10 
 
 #define DEVICE                  "/dev/led_device" 
+#define DEVICE_FILE_NAME2       "/dev/led_device" 
 
 
 

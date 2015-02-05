@@ -12,11 +12,14 @@ compile:
 	make -C $(KERNELDIR)  M=$(PWD) modules
 
 clean:
-	rm -rf *.o .depend.*.cmd  *.mod.c .tmp_versions .led_driver* .*handler*  .mod_main* 	
+	make -C $(KERNELDIR)  M=$(PWD) clean
 
 cleanall: clean
-	rm -rf *.ko test_ioctl 	
+	rm -rf *.ko test_ioctl test_ioctl2 	
 
 test_ioctl:
 	gcc   test_ioctl.c -o test_ioctl
+
+test_ioctl2:
+	gcc   ioctl.c -o test_ioctl2
 

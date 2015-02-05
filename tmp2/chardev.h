@@ -20,6 +20,7 @@
 //#define MAJOR_NUM 100
 #define MAJOR_NUM 10
 
+#define IOCTL_DUMMY 0x00000001
 /* 
  * Set the message of the device driver 
  */
@@ -65,5 +66,6 @@
  */
 //#define DEVICE_FILE_NAME "char_dev"
 #define DEVICE_FILE_NAME "/dev/sample_misc_dev"
+#define DEVICE_FILE_NAME2 "/dev/led_device"
 
 #endif
