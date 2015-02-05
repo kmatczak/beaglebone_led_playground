@@ -4,6 +4,7 @@
 #include "mod_main.h"
 #include "led_ioctl_cmd.h"
 #include <asm/uaccess.h>
+#include "led_handler.h"
 
 #define __NO_VERSION__
 
@@ -22,23 +23,53 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
     printk(KERN_INFO "led_ioctl\n");
 
     switch(cmd){
-/*        case SCULL_IOCSQUANTUM:
-                printk(KERN_INFO "received IOCTL_SET_INT");
-                break;
-*/      
         case IOCTL_LED_ON:
                 printk(KERN_INFO "IOCTL_LED_ON received");
+                
+                switch(led_mode){
+                    case BLINK:
+                        stop_led_threads();
+                        start_blink_thread();
+                        break;
+                    case TIMEOUT:
+                        stop_led_threads();
+                        start_timeout_thread();
+                        break;
+                    case NORMAL:
+                    default:
+                        led_control(1);
+                    break;
+                }
                 break;
-/*        case IOC_LED_ON:
-                printk(KERN_INFO "IOC_LED_ON:%d",cmd);
+
+        case IOCTL_LED_OFF:
+                
+                printk(KERN_INFO "IOCTL_LED_OFF received");
+                 
+                switch(led_mode){
+                    case BLINK:
+                        stop_led_threads();
+                    break;
+                        case TIMEOUT:
+                        stop_led_threads();
+                    break;
+                    case NORMAL:
+                    default:
+                        led_control(0);
+                    break;            
+                }
+
                 break;
-        case IOC_LED_OFF:
+
+        case IOCTL_LED_MODE_BLINK:
+                printk(KERN_INFO "IOCTL_LED_MODE_BLINK received");
+                led_mode=BLINK;
                 break;
-        case IOC_LED_MODE_BLINK:
+        case IOCTL_LED_MODE_TIMEOUT:
+                printk(KERN_INFO "IOCTL_LED_MODE_TIMEOUT received");
+                led_mode=TIMEOUT;
                 break;
-        case IOC_LED_MODE_TIMEOUT:
-                break;
-*/        default:
+        default:
                 break;        
 
     }
@@ -73,7 +104,7 @@ static int led_release(struct inode *inode, struct file *file){
     
 static const struct file_operations led_fops = {
     .owner = THIS_MODULE,
-//    .llseek = no_llseek,
+    .llseek = no_llseek,
     .write = &led_write,
     .unlocked_ioctl = (void*)&led_ioctl,
     .compat_ioctl = (void*)&led_ioctl, 

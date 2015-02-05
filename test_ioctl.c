@@ -2,6 +2,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include "led_ioctl_cmd.h"
 
 
@@ -21,8 +23,22 @@ int retval=0;
 int quantum =5;
 
 char *msg="test_message";
-printf("IOCTL_LED_ON value: %x\n",IOCTL_LED_ON);
+
+
+retval = ioctl(fd, IOCTL_LED_MODE_BLINK);
 retval = ioctl(fd, IOCTL_LED_ON);
+sleep(5);
+retval = ioctl(fd, IOCTL_LED_OFF);
+
+retval = ioctl(fd, IOCTL_LED_MODE_TIMEOUT) ;
+retval = ioctl(fd, IOCTL_LED_ON);
+sleep(5);
+
+retval = ioctl(fd, IOCTL_LED_MODE_NORMAL) ;
+retval = ioctl(fd, IOCTL_LED_ON);
+sleep(5);
+
+
 
 if (retval == -1){
   
