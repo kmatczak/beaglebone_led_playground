@@ -20,7 +20,8 @@ int retval=0;
 int quantum =5;
 
 char *msg="test_message";
-printf("IOCTL_SET_MSG value: %x\n",IOCTL_SET_MSG);
+printf("IOCTL_DUMMY value: %x\n",IOCTL_DUMMY);
+//printf("IOCTL_SET_MSG value: %x\n",IOCTL_SET_MSG);
 //if ( retval = ioctl(fd, IOCTL_SET_MSG, msg ) == -1){
 retval = ioctl(fd, IOCTL_DUMMY);
 if (retval == -1) perror("error while ioctl writing");
