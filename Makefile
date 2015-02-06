@@ -6,7 +6,7 @@ EXTRA_CFLAGS:=-g -Wno-declaration-after-statement -Wno-unused-result -Wno-parent
 KERNELDIR:=/home/ngnlab/workspace/buildroot-black/output/build/linux-7f280334068b7c875ade51f8f3921ab311f0c824
 PWD:=$(shell pwd)
 
-all: compile clean
+all: compile test_ioctl
 
 compile:
 	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD) modules
@@ -17,9 +17,6 @@ clean:
 
 cleanall: clean
 	rm -rf *.ko test_ioctl 	
-
-#test_ioctl:
-#	make -C $(KERNELDIR) ARCH=arm CROSS_COMPILE=/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux- SUBDIRS=$(PWD)  -v ./test_ioctl.o 
 
 test_ioctl:
 	/home/ngnlab/workspace/buildroot-black/output/host/usr/bin/arm-linux-gcc   test_ioctl.c -o test_ioctl

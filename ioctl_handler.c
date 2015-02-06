@@ -20,12 +20,11 @@ static ssize_t led_write(struct file *file, const char __user *data, size_t len,
 
 static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
-    printk(KERN_INFO "led_ioctl\n");
+  //  printk(KERN_INFO "led_ioctl\n");
 
     switch(cmd){
 
         case IOCTL_LED_ON:
-                printk(KERN_INFO "IOCTL_LED_ON received");
                 
                 switch(led_mode){
                     case BLINK:
@@ -42,11 +41,8 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                     break;
                 }
                 break;
-
         case IOCTL_LED_OFF:
                 
-                printk(KERN_INFO "IOCTL_LED_OFF received");
-                 
                 switch(led_mode){
                     case BLINK:
                         stop_led_threads();
@@ -61,14 +57,19 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 }
 
                 break;
-
         case IOCTL_LED_MODE_BLINK:
-                printk(KERN_INFO "IOCTL_LED_MODE_BLINK received");
+                
+                if ( get_interval( (char*)arg, &blink_interval) == -1 ) return -1; 
                 led_mode=BLINK;
                 break;
         case IOCTL_LED_MODE_TIMEOUT:
-                printk(KERN_INFO "IOCTL_LED_MODE_TIMEOUT received");
+                
+                if ( get_interval( (char*)arg, &timeout_interval) == -1 ) return -1; 
                 led_mode=TIMEOUT;
+                break;
+        case IOCTL_LED_MODE_NORMAL:
+                
+                led_mode=NORMAL;
                 break;
         default:
                 break;        

@@ -102,4 +102,22 @@ int  start_timeout_thread(void){
 }
 
 
+/*
+    extracts numeric value after '=' sign 
 
+*/
+int get_interval(char* modestring, int* interval){ 
+    
+    char* pch; 
+    pch = strchr(modestring,'=');
+    
+    if (pch != NULL){
+        ++pch;
+        if ( 0 > sscanf(pch, "%d", interval) ) {
+            printk(KERN_ERR "%s conversion error ! \n", modestring);
+            return -1;
+        }
+    }
+
+    return 0;
+}

@@ -9,7 +9,7 @@
 #define __NO_VERSION__
 
 
-const char* mod_txt[] = {"normal","blink","timeout"};
+// const char* mod_txt[] = {"normal","blink","timeout"};
 
 
 //----sysfs files creation---------------------------------
@@ -44,29 +44,14 @@ static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, con
     
     if ( NULL != strstr(mode, mod_txt[0]) ) led_mode = NORMAL;
     else if ( NULL != strstr(mode, mod_txt[1]) ) {
+       
         led_mode = BLINK;
-        char* pch; 
-        pch = strchr(mode,'=');
-        if (pch != NULL){
-            ++pch;
-            if ( 0 > sscanf(pch, "%d", &blink_interval) ) {
-                printk(KERN_ERR "blink conversion error ! \n");
-                return -1;
-            }
-       }
-
+        if ( get_interval(mode, &blink_interval) == -1 ) return -1;
     }
     else if ( NULL != strstr(mode, mod_txt[2]) ) {
+       
         led_mode = TIMEOUT;
-        char* pch; 
-        pch = strchr(mode,'=');
-        if (pch != NULL){
-            ++pch;
-            if ( 0 > sscanf(pch, "%d", &timeout_interval) ) {
-                printk(KERN_ERR "timeout conversion error ! \n");
-                return -1;
-            }
-       }
+        if ( get_interval(mode, &timeout_interval) == -1 ) return -1;
     }
     else {
         printk(KERN_ERR "mode not supported or wrong syntax\n");

@@ -6,25 +6,20 @@
 //#include <linux/kthread.h>
 #include "mod_main.h"
 #include "led_handler.h"
+#include "ioctl_handler.h"
+#include "sysfs_handler.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
 
-
-//extern definitions
-extern int sysfs_init(void);
-extern int sysfs_cleanup(void);
-extern int ioctl_init(void);
-extern int ioctl_cleanup(void);
 
 //extern declarations
 int blink_interval=50;
 int timeout_interval=5000;
 Mode led_mode = NORMAL;
 int  gpio=54;
+const char* mod_txt[] = {"normal","blink","timeout"};
 
-
-
-
+        
 
 static int __init hello_init(void){
     
@@ -32,12 +27,12 @@ static int __init hello_init(void){
 
 
 	if ( 0!= gpio_request(gpio,"usr")){
-	    printk(KERN_ERR "Somsing went wrong  with gpio %d :( \n", gpio );
+	    printk(KERN_ERR "Sth went wrong  with gpio %d :( \n", gpio );
 	    return -EIO;
     }
     
     if (0!=gpio_direction_output(gpio, 0)) {
-	    printk(KERN_ERR "Somsing went wrong  with gpio %d direction :( \n", gpio);
+	    printk(KERN_ERR "Sth went wrong  with gpio %d direction :( \n", gpio);
 	    return -EIO;
     }
    
