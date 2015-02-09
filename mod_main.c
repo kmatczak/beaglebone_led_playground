@@ -76,7 +76,6 @@ int get_mode (Mode *mode, int *blink_int, int *time_int){
 
 static int __init hello_init(void){
     
-    printk(KERN_INFO "Hello world !\n");
 
 	if ( 0!= gpio_request(gpio,"usr")){
 	    printk(KERN_ERR "Sth went wrong  with gpio %d :( \n", gpio );
