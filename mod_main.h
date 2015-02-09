@@ -1,7 +1,13 @@
 #ifndef LED1_H
 #define LED1_H
 
-
+/*!
+ *  
+ *  \author     Krzysztof Matczak
+ *  \brief      GPIO led driver. Features: ON/OFF, blink and timeout LED activity.
+ *
+ *
+ */
 
 typedef enum modes {NORMAL, BLINK, TIMEOUT} Mode; 
 
