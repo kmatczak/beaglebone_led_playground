@@ -4,7 +4,8 @@
 /*!
  *  
  *  \author     Krzysztof Matczak
- *  \brief      GPIO led driver. Features: ON/OFF, blink and timeout LED activity.
+ *  \brief      GPIO led driver. Features: ON/OFF, blink and timeout LED activity. Targeted and tested for Beaglebone Black rev C
+ *  
  *
  *
  */

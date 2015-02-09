@@ -44,7 +44,7 @@ static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, con
     int interval=0;
      
     strncpy(mode,buf,20);
-    printk(KERN_INFO "fetched mode: %s", mode);
+   // printk(KERN_INFO "fetched mode: %s", mode);
     
     if ( NULL != strstr(mode, mod_txt[0]) ) {
 

@@ -33,7 +33,7 @@ static void led_blink(int interval){
 
     set_current_state(TASK_RUNNING);    
     
-    printk(KERN_INFO "led_blink called !\n");
+//    printk(KERN_INFO "led_blink called !\n");
     
     thr_flag[0]=1;
     bool state=false;
@@ -55,7 +55,7 @@ static void led_timer(int time){
     
     set_current_state(TASK_RUNNING);
     
-    printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
+//    printk(KERN_INFO "led_on_timer called timeout=%d!\n", time);
 
     thr_flag[1]=1;
 
@@ -83,7 +83,7 @@ int stop_led_threads(void){
 
 int start_blink_thread( int interval){
 
-    blink_task = kthread_run(&led_blink, interval,"blink_thread");
+    blink_task = kthread_run(&led_blink, (void*)interval,"blink_thread");
 //    printk(KERN_INFO "Kernel Thread : %s\n",blink_task->comm);
 
     return 0;
@@ -94,7 +94,7 @@ int start_blink_thread( int interval){
 
 int  start_timeout_thread(int interval){
 
-    timeout_task = kthread_run(&led_timer, interval,"timeout_thread");
+    timeout_task = kthread_run(&led_timer, (void*)interval,"timeout_thread");
 //    printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
 
     return 0;
