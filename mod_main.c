@@ -23,12 +23,12 @@ static Mode led_mode = NORMAL;
 int  gpio=54;
 const char* mod_txt[] = {"normal","blink","timeout"};
 
-
 static struct semaphore mode_mutex;
 
 
-int set_mode( Mode mod, int interval){
 
+
+int set_mode( Mode mod, int interval){
 
     if (down_interruptible(&mode_mutex)) return -ERESTARTSYS; 
 
@@ -52,6 +52,7 @@ int set_mode( Mode mod, int interval){
 
     return 0;
 }
+
 
 
 

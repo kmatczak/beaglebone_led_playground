@@ -18,6 +18,7 @@ static ssize_t led_write(struct file *file, const char __user *data, size_t len,
 }
 
 
+
 static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
 //    printk(KERN_INFO "led_ioctl\n");
@@ -88,6 +89,7 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
 }
 
 
+
 static int led_open(struct inode *inode, struct file *file){
 
 
@@ -100,6 +102,7 @@ static int led_open(struct inode *inode, struct file *file){
 }
 
 
+
 static int led_release(struct inode *inode, struct file *file){
 
     --in_use;
@@ -107,8 +110,6 @@ static int led_release(struct inode *inode, struct file *file){
     printk(KERN_INFO "/dev/led_driver release\n");
     return 0;
 }
-
-
 
 
     
@@ -142,6 +143,7 @@ int ioctl_init(void){
     return 0;
 
 }
+
 
 
 int ioctl_cleanup(void){
