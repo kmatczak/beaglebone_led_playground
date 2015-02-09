@@ -20,20 +20,28 @@ static ssize_t led_write(struct file *file, const char __user *data, size_t len,
 
 static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
    
-  //  printk(KERN_INFO "led_ioctl\n");
+//    printk(KERN_INFO "led_ioctl\n");
+  
+    int interval=0;
+    Mode lm;
+    int bl_int;
+    int tm_int;
+    
+    get_mode(&lm, &bl_int, &tm_int );
+
 
     switch(cmd){
 
         case IOCTL_LED_ON:
                 
-                switch(led_mode){
+                switch(lm){
                     case BLINK:
                         stop_led_threads();
-                        start_blink_thread();
+                        start_blink_thread(bl_int);
                         break;
                     case TIMEOUT:
                         stop_led_threads();
-                        start_timeout_thread();
+                        start_timeout_thread(tm_int);
                         break;
                     case NORMAL:
                     default:
@@ -43,7 +51,7 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 break;
         case IOCTL_LED_OFF:
                 
-                switch(led_mode){
+                switch(lm){
                     case BLINK:
                         stop_led_threads();
                     break;
@@ -59,17 +67,17 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
                 break;
         case IOCTL_LED_MODE_BLINK:
                 
-                if ( get_interval( (char*)arg, &blink_interval) == -1 ) return -1; 
-                led_mode=BLINK;
+                if ( get_interval( (char*)arg, &interval) == -1 ) return -1; 
+                set_mode(BLINK, interval);
                 break;
         case IOCTL_LED_MODE_TIMEOUT:
                 
-                if ( get_interval( (char*)arg, &timeout_interval) == -1 ) return -1; 
-                led_mode=TIMEOUT;
+                if ( get_interval( (char*)arg, &interval) == -1 ) return -1; 
+                set_mode(TIMEOUT, interval);
                 break;
         case IOCTL_LED_MODE_NORMAL:
                 
-                led_mode=NORMAL;
+                set_mode(NORMAL, interval);
                 break;
         default:
                 break;        

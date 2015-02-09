@@ -33,6 +33,7 @@ sleep 2
 echo "0" > /sys/kernel/led_gpio_54/control
 
 
+echo "=== TEST END ==="
 
 
 

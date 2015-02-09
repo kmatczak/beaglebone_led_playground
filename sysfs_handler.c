@@ -9,9 +9,6 @@
 #define __NO_VERSION__
 
 
-// const char* mod_txt[] = {"normal","blink","timeout"};
-
-
 //----sysfs files creation---------------------------------
 
 
@@ -21,6 +18,11 @@ static int control;
 
 static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf){
     //return sprintf(buf, "%d\n", mode);
+   
+   Mode led_mode;
+   int blink_interval;
+   int timeout_interval;
+   get_mode(&led_mode, &blink_interval, &timeout_interval);
     
     switch(led_mode){
         case BLINK:
@@ -38,20 +40,26 @@ static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char
 }
 
 static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count){
-    
+   
+    int interval=0;
+     
     strncpy(mode,buf,20);
     printk(KERN_INFO "fetched mode: %s", mode);
     
-    if ( NULL != strstr(mode, mod_txt[0]) ) led_mode = NORMAL;
+    if ( NULL != strstr(mode, mod_txt[0]) ) {
+
+        set_mode(NORMAL,interval);
+    }
     else if ( NULL != strstr(mode, mod_txt[1]) ) {
        
-        led_mode = BLINK;
-        if ( get_interval(mode, &blink_interval) == -1 ) return -1;
+        if ( get_interval(mode, &interval) == -1 ) return -1;
+        set_mode(BLINK, interval);
     }
     else if ( NULL != strstr(mode, mod_txt[2]) ) {
        
-        led_mode = TIMEOUT;
-        if ( get_interval(mode, &timeout_interval) == -1 ) return -1;
+        if ( get_interval(mode, &interval) == -1 ) return -1;
+        set_mode(TIMEOUT, interval);
+
     }
     else {
         printk(KERN_ERR "mode not supported or wrong syntax\n");
@@ -69,6 +77,11 @@ static ssize_t control_show(struct kobject *kobj, struct kobj_attribute *attr, c
 static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count){
     
     sscanf(buf, "%du", &control);
+
+    Mode led_mode;
+    int tm_int;
+    int bl_int;
+    get_mode(&led_mode, &bl_int, &tm_int);
 
     switch(control){
         case 0:   
@@ -89,11 +102,11 @@ static ssize_t control_store(struct kobject *kobj, struct kobj_attribute *attr, 
             switch(led_mode){
                 case BLINK:
                     stop_led_threads();
-                    start_blink_thread();
+                    start_blink_thread(bl_int);
                     break;
                 case TIMEOUT:
                     stop_led_threads();
-                    start_timeout_thread();
+                    start_timeout_thread(tm_int);
                     break;
                 case NORMAL:
                 default:

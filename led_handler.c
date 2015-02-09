@@ -10,9 +10,9 @@
 
 
 //extern declarations
-extern int blink_interval;
-extern int timeout_interval;
-extern Mode led_mode;
+//extern int blink_interval;
+//extern int timeout_interval;
+//extern Mode led_mode;
 extern int gpio;
 
 
@@ -24,7 +24,6 @@ int thr_flag[2] = { 0, 0 };
 
 int led_control(int val){
 
-//    printk(KERN_INFO "led_control called !\n");
     gpio_set_value(gpio, val);
 
     return 0;
@@ -82,10 +81,10 @@ int stop_led_threads(void){
 }
 
 
-int start_blink_thread(void){
+int start_blink_thread( int interval){
 
-    blink_task = kthread_run(&led_blink, blink_interval,"blink_thread");
-    printk(KERN_INFO"Kernel Thread : %s\n",blink_task->comm);
+    blink_task = kthread_run(&led_blink, interval,"blink_thread");
+//    printk(KERN_INFO "Kernel Thread : %s\n",blink_task->comm);
 
     return 0;
 }
@@ -93,10 +92,10 @@ int start_blink_thread(void){
 
 
 
-int  start_timeout_thread(void){
+int  start_timeout_thread(int interval){
 
-    timeout_task = kthread_run(&led_timer, timeout_interval,"timeout_thread");
-    printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
+    timeout_task = kthread_run(&led_timer, interval,"timeout_thread");
+//    printk(KERN_INFO"Kernel Thread : %s\n",timeout_task->comm);
 
     return 0;
 }
