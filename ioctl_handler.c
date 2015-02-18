@@ -28,6 +28,8 @@ static int led_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
     int bl_int;
     int tm_int;
     
+    
+        
     get_mode(&lm, &bl_int, &tm_int );
 
 
