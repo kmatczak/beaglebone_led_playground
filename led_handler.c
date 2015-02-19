@@ -69,7 +69,7 @@ static void led_timer(int time){
 
 int stop_led_threads(void){
     
-//    printk (KERN_INFO "process: %s  pid:%i\n", current->comm, current->pid) ;
+    printk (KERN_INFO "%s: process: %s  pid:%i\n",__FUNCTION__,  current->comm, current->pid) ;
     if (thr_flag[1]) kthread_stop(timeout_task);
     if (thr_flag[0]) kthread_stop(blink_task);
 
@@ -79,7 +79,7 @@ int stop_led_threads(void){
 
 int start_blink_thread( int interval){
 
-//    printk (KERN_INFO "process: %s  pid:%i\n", current->comm, current->pid) ;
+    printk (KERN_INFO "%s: process: %s  pid:%i\n",__FUNCTION__,  current->comm, current->pid) ;
     blink_task = kthread_run(&led_blink, interval,"blink_thread");
 //    printk(KERN_INFO "Kernel Thread : %s\n",blink_task->comm);
 

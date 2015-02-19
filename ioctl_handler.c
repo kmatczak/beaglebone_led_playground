@@ -5,6 +5,7 @@
 #include "led_ioctl_cmd.h"
 #include <asm/uaccess.h>
 #include "led_handler.h"
+#include <linux/slab.h>
 
 #define __NO_VERSION__
 
@@ -99,7 +100,13 @@ static int led_open(struct inode *inode, struct file *file){
     ++in_use;
 
     printk(KERN_INFO "/dev/led_driver open\n");
+    
+    // ----- my playground  --------
 
+    void *i = kmalloc(60, GFP_USER);
+    file->private_data=i;
+
+    // ----------------------------
     return 0;
 }
 
