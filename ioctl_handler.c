@@ -102,10 +102,10 @@ static int led_open(struct inode *inode, struct file *file){
     printk(KERN_INFO "/dev/led_driver open\n");
     
     // ----- my playground  --------
-
-    void *i = kmalloc(60, GFP_USER);
+    /*
+    void *i = kmalloc(60, GFP_KERNEL);
     file->private_data=i;
-
+    */
     // ----------------------------
     return 0;
 }
@@ -115,6 +115,10 @@ static int led_open(struct inode *inode, struct file *file){
 static int led_release(struct inode *inode, struct file *file){
 
     --in_use;
+
+    // ------
+    //kfree(file->private_data);
+    // -------
 
     printk(KERN_INFO "/dev/led_driver release\n");
     return 0;
